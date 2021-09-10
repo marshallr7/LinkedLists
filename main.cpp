@@ -16,16 +16,66 @@ class DLLNode {
         DLLNode *prev;
 };
 
+// Set the head of the list and update old values if applicable
 void setHead(SLLNode **head, int value) {
     auto *node = new SLLNode();
     node->value = value;
-    node->next = *head;
-    *head = node;
+
+    if (head == nullptr) {
+        node->next = nullptr;
+        *head = node;
+    } else {
+        SLLNode *tmp = *head;
+        node->next = tmp;
+        *head = node;
+        delete tmp;
+    }
+}
+
+void setTail(SLLNode **head, int value) {
+    cout << "in method";
+    auto *node = new SLLNode();
+    node->value = value;
+
+    if (*head != nullptr) {
+        SLLNode *tmp = *head;
+        while (tmp->next != nullptr) {
+            cout << "Searching for tail";
+            tmp = tmp->next;
+        }
+        tmp->next = node;
+        cout << "\nAdded " << value << " to the end of the list.\n";
+    } else {
+        cout << "\nList is empty, inserting value at head...\n";
+        setHead(head, value);
+    }
+}
+
+void deleteHead(SLLNode **head) {
+    if (*head == nullptr) {
+        cout << "\nHead does not exist.\n";
+    } else {
+        SLLNode *tmp = *head;
+        tmp = tmp->next;
+        *head = tmp;
+        cout << "\nHead successfully deleted.\n";
+    }
+}
+
+void deleteTail(SLLNode **head) {
+    if (*head == nullptr) {
+        cout << "\nList is empty.\n";
+    } else {
+        SLLNode *tmp = *head;
+        while (tmp->next != nullptr) {
+        }
+    }
 }
 
 void display(SLLNode *head) {
+    cout << "List Contents: \n";
     while (head != nullptr) {
-        cout << head->value;
+        cout << head->value << "\n" ;
         head = head->next;
     }
 }
@@ -57,42 +107,50 @@ int main() {
         user_option = load_user_menu_selection(user_option);
     } while ((user_option < 0) || (user_option > 12));
 
-    switch (user_option) {
-        case 0:
-            int headValue;
-            cout << "Enter a number for a new head: \n";
-            cin >> headValue;
+    while (user_option != 12) {
+        switch (user_option) {
+            case 0:
+                int headValue;
+                cout << "Enter a number for a new head: \n";
+                cin >> headValue;
 
-            if (sllHead == nullptr) {
                 setHead(&sllHead, headValue);
                 display(sllHead);
-            } else {
-                cout << "hmm";
-            }
-            break;
-        case 1:
-            break;
-        case 2:
-            break;
-        case 3:
-            break;
-        case 4:
-            break;
-        case 5:
-            break;
-        case 6:
-            break;
-        case 7:
-            break;
-        case 8:
-            break;
-        case 9:
-            break;
-        case 10:
-            break;
-        case 11:
-            break;
-        case 12:
-            break;
+                break;
+            case 1:
+                int tailValue;
+                cout << "Enter a number for the tail value: \n";
+                cin >> tailValue;
+
+                setTail(&sllHead, tailValue);
+                display(sllHead);
+                break;
+            case 2:
+                deleteHead(&sllHead);
+                display(sllHead);
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            case 6:
+                break;
+            case 7:
+                break;
+            case 8:
+                break;
+            case 9:
+                break;
+            case 10:
+                break;
+            case 11:
+                break;
+            default:
+                cout << "Error... Something went wrong...";
+                break;
+        }
+        user_option = load_user_menu_selection(user_option);
     }
 }
