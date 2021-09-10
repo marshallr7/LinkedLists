@@ -67,15 +67,45 @@ void deleteTail(SLLNode **head) {
         cout << "\nList is empty.\n";
     } else {
         SLLNode *tmp = *head;
-        while (tmp->next != nullptr) {
+        while (tmp->next->next != nullptr) {
+            tmp = tmp->next;
         }
+        tmp->next = nullptr;
+        cout << "\nTail deleted.\n";
+    }
+}
+
+void searchAndDelete(SLLNode **head, int value) {
+    SLLNode *tmp = *head;
+    SLLNode *prev = nullptr;
+
+    if (*head == nullptr) {
+        cout << "\nThe list is empty, can not delete element.\n";
+    }
+
+    if (tmp->value == value) {
+        cout << "\nValue was found at head, deleting head...\n";
+        deleteHead(head);
+        return;
+    } else {
+        while (tmp != nullptr && tmp->value != value) {
+            prev = tmp;
+            tmp = tmp->next;
+        }
+
+        if (tmp == nullptr) {
+            cout << "\nThe value was not found in the list.\n";
+            return;
+        }
+
+        prev->next = tmp->next;
     }
 }
 
 void display(SLLNode *head) {
-    cout << "List Contents: \n";
+    cout << "\n\nList Contents: \n";
     while (head != nullptr) {
-        cout << head->value << "\n" ;
+        cout << head->value << "\n\n" ;
         head = head->next;
     }
 }
@@ -111,7 +141,7 @@ int main() {
         switch (user_option) {
             case 0:
                 int headValue;
-                cout << "Enter a number for a new head: \n";
+                cout << "\nEnter a number for a new head: \n";
                 cin >> headValue;
 
                 setHead(&sllHead, headValue);
@@ -119,7 +149,7 @@ int main() {
                 break;
             case 1:
                 int tailValue;
-                cout << "Enter a number for the tail value: \n";
+                cout << "\nEnter a number for the tail value: \n";
                 cin >> tailValue;
 
                 setTail(&sllHead, tailValue);
@@ -130,10 +160,18 @@ int main() {
                 display(sllHead);
                 break;
             case 3:
+                deleteTail(&sllHead);
+                display(sllHead);
                 break;
             case 4:
+                int deleteValue;
+                cout << "\nEnter a number to remove from the list: \n";
+                cin >> deleteValue;
+                searchAndDelete(&sllHead, deleteValue);
+                display(sllHead);
                 break;
             case 5:
+                display(sllHead);
                 break;
             case 6:
                 break;
