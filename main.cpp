@@ -13,15 +13,24 @@ class DLLNode {
     public:
         int value;
         DLLNode *next;
-        DLLNode *prev;
+    __unused DLLNode *prev;
 };
+
+// Check if a Single Linked List is empty
+bool isEmpty(SLLNode **head) {
+    if (*head == nullptr) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 // Set the head of the list and update old values if applicable
 void setHead(SLLNode **head, int value) {
     auto *node = new SLLNode();
     node->value = value;
 
-    if (head == nullptr) {
+    if (isEmpty(head)) {
         node->next = nullptr;
         *head = node;
     } else {
@@ -32,12 +41,12 @@ void setHead(SLLNode **head, int value) {
     }
 }
 
+// Set the tail to the new value and relocate pre-existing tail
 void setTail(SLLNode **head, int value) {
-    cout << "in method";
     auto *node = new SLLNode();
     node->value = value;
 
-    if (*head != nullptr) {
+    if (!isEmpty(head)) {
         SLLNode *tmp = *head;
         while (tmp->next != nullptr) {
             cout << "Searching for tail";
@@ -51,8 +60,9 @@ void setTail(SLLNode **head, int value) {
     }
 }
 
+// Remove the head node and update to new head
 void deleteHead(SLLNode **head) {
-    if (*head == nullptr) {
+    if (isEmpty(head)) {
         cout << "\nHead does not exist.\n";
     } else {
         SLLNode *tmp = *head;
@@ -62,8 +72,9 @@ void deleteHead(SLLNode **head) {
     }
 }
 
+// Remove the tail node and update to new tail
 void deleteTail(SLLNode **head) {
-    if (*head == nullptr) {
+    if (isEmpty(head)) {
         cout << "\nList is empty.\n";
     } else {
         SLLNode *tmp = *head;
@@ -75,11 +86,12 @@ void deleteTail(SLLNode **head) {
     }
 }
 
+// Search for a value and remove it from the single linked list
 void searchAndDelete(SLLNode **head, int value) {
     SLLNode *tmp = *head;
     SLLNode *prev = nullptr;
 
-    if (*head == nullptr) {
+    if (isEmpty(head)) {
         cout << "\nThe list is empty, can not delete element.\n";
     }
 
@@ -102,6 +114,7 @@ void searchAndDelete(SLLNode **head, int value) {
     }
 }
 
+// display single linked list
 void display(SLLNode *head) {
     cout << "\n\nList Contents: \n";
     while (head != nullptr) {
@@ -110,7 +123,106 @@ void display(SLLNode *head) {
     }
 }
 
+// display double linked list
+void display(DLLNode *head) {
+    cout << "\n\nList Contents: \n";
+    while (head != nullptr) {
+        cout << head->value << "\n" ;
+        head = head->next;
+    }
+}
+
+// Set double linked list head
 void setHead(DLLNode **head, int value) {
+    auto *node = new DLLNode();
+    node->value = value;
+    node->prev = nullptr;
+    if (*head == nullptr) {
+        node->next = nullptr;
+        *head = node;
+    } else {
+        DLLNode *tmp = *head;
+        node->next = tmp;
+        *head = node;
+        delete tmp;
+    }
+}
+
+// set double linked list tail
+void setTail(DLLNode **head, int value) {
+    if (*head == nullptr) {
+        cout << "The list is empty... Inserting value as head";
+        setHead(head, value);
+        return;
+    } else {
+        auto *node = new DLLNode();
+        node->value = value;
+        DLLNode *tmp = *head;
+        while (tmp->next != nullptr) {
+            tmp = tmp->next;
+        }
+        tmp->next = node;
+        node->next = nullptr;
+        node->prev = tmp;
+    }
+}
+
+// delete head from double linked list
+void deleteHead(DLLNode **head) {
+    if (*head == nullptr) {
+        cout << "The list is empty.";
+        return;
+    } else {
+        DLLNode *tmp = *head;
+        tmp = tmp->next;
+        *head = tmp;
+    }
+}
+
+// delete tail from double linked list
+void deleteTail(DLLNode **head) {
+    if (*head == nullptr) {
+        cout << "The list is empty.";
+        return;
+    }
+    DLLNode *tmp = *head;
+    if (tmp->next == nullptr) {
+        deleteHead(head);
+        return;
+    }
+    while (tmp->next->next != nullptr) {
+        tmp = tmp->next;
+    }
+    tmp->next = nullptr;
+}
+
+// search and delete a value in a double linked list
+void searchAndDelete(DLLNode **head, int value) {
+    if (*head == nullptr) {
+        cout << "\nThe list is empty.\n";
+        return;
+    }
+    DLLNode *tmp = *head;
+    DLLNode *prev;
+    if (tmp->value == value) {
+        deleteHead(head);
+        return;
+    }
+    while ((tmp->next != nullptr) && (tmp->next->value != value)) {
+        tmp = tmp->next;
+    }
+
+    if (tmp->next == nullptr) {
+        cout << "\nThe value was not found in the list\n";
+        return;
+    }
+
+    // remove the node with value and reassign everything
+    prev = tmp;
+    tmp = tmp->next->next;
+    tmp->prev = prev;
+//    delete prev->next;
+    prev->next = tmp;
 
 }
 
@@ -122,6 +234,7 @@ void mainMenu() {
     cout << "Enter an option: ";
 }
 
+// display driver menu and load user input into memory
 int load_user_menu_selection(int user_option) {
     mainMenu();
     cin >> user_option;
@@ -129,7 +242,7 @@ int load_user_menu_selection(int user_option) {
 }
 
 int main() {
-    int user_option;
+    int user_option = 0, value;
     SLLNode *sllHead = nullptr;
     DLLNode *dllHead = nullptr;
 
@@ -140,19 +253,17 @@ int main() {
     while (user_option != 12) {
         switch (user_option) {
             case 0:
-                int headValue;
                 cout << "\nEnter a number for a new head: \n";
-                cin >> headValue;
+                cin >> value;
 
-                setHead(&sllHead, headValue);
+                setHead(&sllHead, value);
                 display(sllHead);
                 break;
             case 1:
-                int tailValue;
                 cout << "\nEnter a number for the tail value: \n";
-                cin >> tailValue;
+                cin >> value;
 
-                setTail(&sllHead, tailValue);
+                setTail(&sllHead, value);
                 display(sllHead);
                 break;
             case 2:
@@ -164,29 +275,47 @@ int main() {
                 display(sllHead);
                 break;
             case 4:
-                int deleteValue;
                 cout << "\nEnter a number to remove from the list: \n";
-                cin >> deleteValue;
-                searchAndDelete(&sllHead, deleteValue);
+                cin >> value;
+                searchAndDelete(&sllHead, value);
                 display(sllHead);
                 break;
             case 5:
                 display(sllHead);
                 break;
             case 6:
+                cout << "Enter a number: ";
+                cin >> value;
+
+                setHead(&dllHead, value);
+                display(dllHead);
                 break;
             case 7:
+                cout << "Enter a number: ";
+                cin >> value;
+
+                setTail(&dllHead, value);
+                display(dllHead);
                 break;
             case 8:
+                deleteHead(&dllHead);
+                display(dllHead);
                 break;
             case 9:
+                deleteTail(&dllHead);
+                display(dllHead);
                 break;
             case 10:
+                cout << "Enter a value: \n";
+                cin >> value;
+                searchAndDelete(&dllHead, value);
+                display(dllHead);
                 break;
             case 11:
+                display(dllHead);
                 break;
             default:
-                cout << "Error... Something went wrong...";
+                cout << "Error... Something went wrong...\n";
                 break;
         }
         user_option = load_user_menu_selection(user_option);
